@@ -1,0 +1,3173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>School Class Management System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4a6491;
+            --secondary-color: #2c3e50;
+            --background-color: #f5f7fa;
+            --card-color: #ffffff;
+            --text-color: #333333;
+            --text-secondary: #666666;
+            --border-color: #eaeaea;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --info-color: #17a2b8;
+            --shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        .dark-mode {
+            --primary-color: #5d7cb0;
+            --secondary-color: #1a2530;
+            --background-color: #121212;
+            --card-color: #1e1e1e;
+            --text-color: #e0e0e0;
+            --text-secondary: #a0a0a0;
+            --border-color: #333333;
+            --shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            transition: var(--transition);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+            color: white;
+            padding: 25px 0;
+            text-align: center;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+            position: relative;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            transition: var(--transition);
+        }
+
+        .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(30deg);
+        }
+
+        .auto-save-indicator {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--success-color);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            display: none;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            transition: var(--transition);
+        }
+
+        .auto-save-indicator.show {
+            display: flex;
+            animation: fadeInOut 2s ease;
+        }
+
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translateY(10px); }
+            20% { opacity: 1; transform: translateY(0); }
+            80% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(10px); }
+        }
+
+        .system-overview {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .card {
+            background: var(--card-color);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            flex: 1;
+            min-width: 250px;
+            transition: var(--transition);
+            border: 1px solid var(--border-color);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+        }
+
+        .card h3 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary-color);
+        }
+
+        .card-icon {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .section {
+            background: var(--card-color);
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            border: 1px solid var(--border-color);
+        }
+
+        .section h2 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section h2 i {
+            color: var(--primary-color);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--card-color);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 16px;
+            transition: var(--transition);
+        }
+
+        input:focus, select:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(74, 100, 145, 0.2);
+        }
+
+        .btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .btn:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        .btn-full {
+            width: 100%;
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 14px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background-color: var(--background-color);
+            font-weight: 700;
+            color: var(--text-color);
+        }
+
+        tr:hover {
+            background-color: var(--background-color);
+        }
+
+        .student-id {
+            font-family: monospace;
+            background-color: var(--background-color);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        .class-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .edit-btn, .delete-btn, .manage-btn, .view-btn {
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            border: none;
+            transition: var(--transition);
+        }
+
+        .edit-btn {
+            background-color: var(--info-color);
+            color: white;
+        }
+
+        .edit-btn:hover {
+            background-color: #138496;
+        }
+
+        .delete-btn {
+            background-color: var(--danger-color);
+            color: white;
+        }
+
+        .delete-btn:hover {
+            background-color: #c82333;
+        }
+
+        .manage-btn {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .manage-btn:hover {
+            background-color: #218838;
+        }
+
+        .view-btn {
+            background-color: var(--warning-color);
+            color: #212529;
+        }
+
+        .view-btn:hover {
+            background-color: #e0a800;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .data-status {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: var(--success-color);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.7; }
+            50% { opacity: 1; }
+            100% { opacity: 0.7; }
+        }
+
+        .save-options {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .save-btn {
+            background-color: var(--success-color);
+        }
+
+        .save-btn:hover {
+            background-color: #218838;
+        }
+
+        .load-btn {
+            background-color: var(--info-color);
+        }
+
+        .load-btn:hover {
+            background-color: #138496;
+        }
+
+        .export-btn {
+            background-color: var(--primary-color);
+        }
+
+        .export-btn:hover {
+            background-color: #3a5273;
+        }
+
+        .class-summary {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .summary-card {
+            background: var(--background-color);
+            border-radius: 8px;
+            padding: 15px;
+            flex: 1;
+            min-width: 150px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            position: relative;
+        }
+
+        .summary-card h4 {
+            margin-bottom: 10px;
+            color: var(--text-color);
+        }
+
+        .summary-card .count {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .class-actions {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            gap: 5px;
+        }
+
+        .attendance-present {
+            color: var(--success-color);
+            font-weight: 600;
+        }
+
+        .attendance-absent {
+            color: var(--danger-color);
+            font-weight: 600;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .present {
+            background-color: var(--success-color);
+        }
+
+        .absent {
+            background-color: var(--danger-color);
+        }
+
+        .attendance-list {
+            margin-top: 15px;
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 10px;
+            background-color: var(--background-color);
+        }
+
+        .attendance-item {
+            padding: 8px 12px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .attendance-item:last-child {
+            border-bottom: none;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: var(--card-color);
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 900px;
+            width: 95%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h3 {
+            color: var(--primary-color);
+            margin: 0;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--text-color);
+            cursor: pointer;
+        }
+
+        .class-colors {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .color-option {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .color-option.selected {
+            border-color: var(--text-color);
+        }
+
+        .historical-filters {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .historical-filters .form-group {
+            flex: 1;
+            min-width: 200px;
+            margin-bottom: 0;
+        }
+
+        .date-range {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .attendance-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: var(--background-color);
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .stat-card h4 {
+            margin-bottom: 10px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .stat-card .stat-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .history-table-container {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            margin-top: 15px;
+        }
+
+        .empty-history {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-secondary);
+        }
+
+        .empty-history i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: var(--border-color);
+        }
+
+        /* New styles for class-separated historical view */
+        .class-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+
+        .class-tab {
+            padding: 10px 20px;
+            background-color: var(--background-color);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .class-tab:hover {
+            background-color: var(--border-color);
+        }
+
+        .class-tab.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .class-tab-badge {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .class-history-section {
+            display: none;
+        }
+
+        .class-history-section.active {
+            display: block;
+        }
+
+        .class-history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .class-history-header h4 {
+            margin: 0;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .class-students-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .student-attendance-card {
+            background-color: var(--background-color);
+            border-radius: 8px;
+            padding: 15px;
+            border: 1px solid var(--border-color);
+        }
+
+        .student-attendance-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .student-attendance-header h5 {
+            margin: 0;
+            color: var(--text-color);
+        }
+
+        .student-id-small {
+            font-family: monospace;
+            background-color: var(--card-color);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+
+        .student-attendance-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .student-stat {
+            text-align: center;
+        }
+
+        .student-stat-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 5px;
+        }
+
+        .student-stat-value {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .student-attendance-dates {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .attendance-date-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .attendance-date-item:last-child {
+            border-bottom: none;
+        }
+
+        .attendance-date {
+            font-size: 0.9rem;
+        }
+
+        .attendance-status-badge {
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-present {
+            background-color: rgba(40, 167, 69, 0.2);
+            color: var(--success-color);
+        }
+
+        .status-absent {
+            background-color: rgba(220, 53, 69, 0.2);
+            color: var(--danger-color);
+        }
+
+        .view-mode-toggle {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .view-mode-btn {
+            padding: 8px 16px;
+            background-color: var(--background-color);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .view-mode-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .view-mode-btn:hover {
+            background-color: var(--border-color);
+        }
+
+        /* NEW: Enhanced Filter Section Styles */
+        .filter-section {
+            background-color: var(--background-color);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            border: 1px solid var(--border-color);
+        }
+
+        .filter-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .filter-header h3 {
+            color: var(--primary-color);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .filter-toggle {
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: var(--transition);
+        }
+
+        .filter-toggle:hover {
+            color: var(--secondary-color);
+        }
+
+        .filter-options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .filter-options.collapsed {
+            display: none;
+        }
+
+        .filter-row {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .filter-group label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .filter-group label i {
+            color: var(--primary-color);
+        }
+
+        .quick-filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .quick-filter-btn {
+            padding: 8px 16px;
+            background-color: var(--card-color);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .quick-filter-btn:hover {
+            background-color: var(--border-color);
+        }
+
+        .quick-filter-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .class-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .class-pill {
+            padding: 8px 16px;
+            background-color: var(--card-color);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .class-pill:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .class-pill.active {
+            color: white;
+            border-color: transparent;
+        }
+
+        .class-pill-badge {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .search-box {
+            position: relative;
+            margin-top: 10px;
+        }
+
+        .search-box input {
+            padding-left: 40px;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+        }
+
+        .filter-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            justify-content: flex-end;
+        }
+
+        .filter-actions .btn-small {
+            padding: 8px 16px;
+        }
+
+        .student-count-badge {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            margin-left: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .system-overview {
+                flex-direction: column;
+            }
+            
+            header h1 {
+                font-size: 2rem;
+            }
+            
+            .theme-toggle {
+                position: relative;
+                top: 0;
+                right: 0;
+                margin: 10px auto;
+            }
+            
+            .save-options {
+                flex-direction: column;
+            }
+            
+            .actions {
+                flex-direction: column;
+            }
+            
+            .actions button {
+                width: 100%;
+            }
+            
+            .historical-filters {
+                flex-direction: column;
+            }
+            
+            .date-range {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .class-students-list {
+                grid-template-columns: 1fr;
+            }
+            
+            .student-attendance-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .class-tabs {
+                overflow-x: auto;
+                flex-wrap: nowrap;
+            }
+            
+            .filter-row {
+                flex-direction: column;
+            }
+            
+            .filter-group {
+                min-width: 100%;
+            }
+            
+            .filter-actions {
+                justify-content: stretch;
+            }
+            
+            .filter-actions button {
+                flex: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>School Class Management System</h1>
+            <p>Separate students by class with unique ID numbers and track attendance</p>
+            <button class="theme-toggle" id="themeToggle">
+                <i class="fas fa-moon"></i>
+            </button>
+        </header>
+
+        <div class="auto-save-indicator" id="autoSaveIndicator">
+            <i class="fas fa-check-circle"></i>
+            <span>Data saved automatically</span>
+        </div>
+
+        <div class="system-overview">
+            <div class="card">
+                <div class="card-icon">👥</div>
+                <h3>Student Management</h3>
+                <p>Register students with unique ID numbers</p>
+                <div class="data-status">
+                    <span>Auto-save: </span>
+                    <div class="status-dot"></div>
+                    <span>Active</span>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-icon">🏫</div>
+                <h3>Class Management</h3>
+                <p>Add, remove, and edit classes freely</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">📊</div>
+                <h3>Attendance History</h3>
+                <p>View historical attendance by class</p>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <!-- Class Management Section -->
+            <div class="section">
+                <h2><i class="fas fa-school"></i> Class Management</h2>
+                <div class="form-group">
+                    <label for="className">Class Name</label>
+                    <input type="text" id="className" placeholder="Enter class name (e.g., Grade 10-A)">
+                </div>
+                <div class="form-group">
+                    <label>Class Color</label>
+                    <div class="class-colors">
+                        <div class="color-option selected" style="background-color: #28a745;" data-color="#28a745"></div>
+                        <div class="color-option" style="background-color: #007bff;" data-color="#007bff"></div>
+                        <div class="color-option" style="background-color: #ffc107;" data-color="#ffc107"></div>
+                        <div class="color-option" style="background-color: #6f42c1;" data-color="#6f42c1"></div>
+                        <div class="color-option" style="background-color: #dc3545;" data-color="#dc3545"></div>
+                        <div class="color-option" style="background-color: #17a2b8;" data-color="#17a2b8"></div>
+                        <div class="color-option" style="background-color: #fd7e14;" data-color="#fd7e14"></div>
+                        <div class="color-option" style="background-color: #20c997;" data-color="#20c997"></div>
+                    </div>
+                </div>
+                <button class="btn btn-full" id="addClass">Add New Class</button>
+                
+                <div style="margin-top: 30px;">
+                    <h3>Existing Classes</h3>
+                    <div id="classesList" class="class-summary">
+                        <!-- Classes will be inserted here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Student Registration Section -->
+            <div class="section">
+                <h2><i class="fas fa-user-plus"></i> Student Registration</h2>
+                <div class="form-group">
+                    <label for="studentName">Student Full Name</label>
+                    <input type="text" id="studentName" placeholder="Enter student's full name">
+                </div>
+                <div class="form-group">
+                    <label for="studentClass">Assign Class</label>
+                    <select id="studentClass">
+                        <option value="">Select Class</option>
+                    </select>
+                </div>
+                <button class="btn btn-full" id="registerStudent">Register Student</button>
+                
+                <div style="margin-top: 30px;">
+                    <h3>Move Student to Another Class</h3>
+                    <div class="form-group">
+                        <label for="moveStudent">Select Student</label>
+                        <select id="moveStudent">
+                            <option value="">Select Student to Move</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="newClass">New Class</label>
+                        <select id="newClass">
+                            <option value="">Select New Class</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-full" id="moveToClass">Move Student</button>
+                </div>
+            </div>
+
+            <!-- Students Overview Section with Enhanced Filter -->
+            <div class="section">
+                <h2><i class="fas fa-users"></i> Students Overview</h2>
+                <div id="classSummary" class="class-summary">
+                    <!-- Class summary will be inserted here -->
+                </div>
+                
+                <!-- Enhanced Filter Section -->
+                <div class="filter-section">
+                    <div class="filter-header">
+                        <h3><i class="fas fa-filter"></i> Filter Students</h3>
+                        <button class="filter-toggle" id="filterToggle">
+                            <i class="fas fa-chevron-down"></i>
+                            <span>Show Filters</span>
+                        </button>
+                    </div>
+                    
+                    <div class="filter-options collapsed" id="filterOptions">
+                        <!-- Filter by Class -->
+                        <div class="filter-group">
+                            <label><i class="fas fa-school"></i> Filter by Class</label>
+                            <div class="class-pills" id="classFilterPills">
+                                <!-- Class pills will be inserted here -->
+                            </div>
+                        </div>
+                        
+                        <!-- Quick Filters -->
+                        <div class="filter-group">
+                            <label><i class="fas fa-bolt"></i> Quick Filters</label>
+                            <div class="quick-filters">
+                                <button class="quick-filter-btn active" data-filter="all">
+                                    <i class="fas fa-users"></i> All Students
+                                </button>
+                                <button class="quick-filter-btn" data-filter="no-class">
+                                    <i class="fas fa-user-times"></i> No Class Assigned
+                                </button>
+                                <button class="quick-filter-btn" data-filter="recent">
+                                    <i class="fas fa-history"></i> Recently Added
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Search by Name -->
+                        <div class="filter-group">
+                            <label><i class="fas fa-search"></i> Search by Name</label>
+                            <div class="search-box">
+                                <i class="fas fa-search search-icon"></i>
+                                <input type="text" id="studentSearch" placeholder="Search student name...">
+                            </div>
+                        </div>
+                        
+                        <!-- Filter Actions -->
+                        <div class="filter-actions">
+                            <button class="btn btn-small" id="applyFiltersBtn">
+                                <i class="fas fa-check"></i> Apply Filters
+                            </button>
+                            <button class="btn btn-small" id="resetFiltersBtn" style="background-color: var(--secondary-color);">
+                                <i class="fas fa-redo"></i> Reset Filters
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Active Filters Display -->
+                    <div id="activeFilters" style="margin-top: 15px; display: none;">
+                        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                            <span style="font-weight: 600; color: var(--primary-color);">Active Filters:</span>
+                            <div id="filterTags" style="display: flex; gap: 8px; flex-wrap: wrap;"></div>
+                            <span id="studentCount" style="margin-left: auto; font-weight: 600; color: var(--primary-color);"></span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Students Table -->
+                <div style="overflow-x: auto; margin-top: 20px;">
+                    <table id="studentsTable">
+                        <thead>
+                            <tr>
+                                <th>Student ID</th>
+                                <th>Name</th>
+                                <th>Class</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="studentsTableBody">
+                            <!-- Student data will be inserted here -->
+                        </tbody>
+                    </table>
+                    <div id="noStudentsMessage" class="empty-history" style="display: none; margin-top: 20px;">
+                        <i class="fas fa-user-slash"></i>
+                        <h3>No Students Found</h3>
+                        <p>No students match your current filters. Try adjusting your search criteria.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Attendance Section -->
+            <div class="section">
+                <h2><i class="fas fa-clipboard-check"></i> Attendance System</h2>
+                <div class="form-group">
+                    <label for="attendanceDate">Attendance Date</label>
+                    <input type="date" id="attendanceDate" value="">
+                </div>
+                <div class="form-group">
+                    <label for="attendanceClass">Select Class for Attendance</label>
+                    <select id="attendanceClass">
+                        <option value="">Select Class</option>
+                    </select>
+                </div>
+                <div id="attendanceTableContainer" style="display: none;">
+                    <table id="attendanceTable">
+                        <thead>
+                            <tr>
+                                <th>Student ID</th>
+                                <th>Name</th>
+                                <th>Status</th>
+                                <th>Current Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="attendanceTableBody">
+                            <!-- Attendance data will be inserted here -->
+                        </tbody>
+                    </table>
+                    <button class="btn btn-full" id="saveAttendance" style="margin-top: 15px;">Save Attendance</button>
+                </div>
+                
+                <div id="attendanceSummary" style="margin-top: 25px;">
+                    <h3>Today's Attendance Display</h3>
+                    <div id="attendanceDisplay">
+                        <div id="presentStudents">
+                            <h4><i class="fas fa-check-circle" style="color: var(--success-color);"></i> Present Students</h4>
+                            <div id="presentList" class="attendance-list">
+                                <!-- Present students will be displayed here -->
+                            </div>
+                        </div>
+                        <div id="absentStudents" style="margin-top: 20px;">
+                            <h4><i class="fas fa-times-circle" style="color: var(--danger-color);"></i> Absent Students</h4>
+                            <div id="absentList" class="attendance-list">
+                                <!-- Absent students will be displayed here -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Historical Attendance Button -->
+                    <div style="margin-top: 25px;">
+                        <button class="btn btn-full view-btn" id="viewHistoryBtn">
+                            <i class="fas fa-history"></i> View Historical Attendance by Class
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Management Section -->
+        <div class="section">
+            <h2><i class="fas fa-database"></i> Data Management</h2>
+            <p>Your data is automatically saved in your browser. You can also manually save, load, or export your data.</p>
+            
+            <div class="save-options">
+                <button class="btn save-btn" id="manualSave">
+                    <i class="fas fa-save"></i> Manual Save
+                </button>
+                <button class="btn load-btn" id="loadData">
+                    <i class="fas fa-download"></i> Load Data
+                </button>
+                <button class="btn export-btn" id="exportData">
+                    <i class="fas fa-file-export"></i> Export Data
+                </button>
+                <button class="btn" id="clearData" style="background-color: var(--danger-color);">
+                    <i class="fas fa-trash-alt"></i> Clear All Data
+                </button>
+            </div>
+            
+            <div class="form-group" style="margin-top: 20px;">
+                <label for="importData">Import Data (JSON file)</label>
+                <input type="file" id="importData" accept=".json">
+                <p style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 5px;">
+                    Select a previously exported JSON file to restore your data
+                </p>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>School Class Management System &copy; 2023 | All data is automatically saved in your browser</p>
+            <p>Last saved: <span id="lastSavedTime">Never</span></p>
+        </div>
+    </div>
+
+    <!-- Edit Class Modal -->
+    <div class="modal" id="editClassModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Edit Class</h3>
+                <button class="close-modal" id="closeEditModal">&times;</button>
+            </div>
+            <div class="form-group">
+                <label for="editClassName">Class Name</label>
+                <input type="text" id="editClassName" placeholder="Enter class name">
+            </div>
+            <div class="form-group">
+                <label>Class Color</label>
+                <div class="class-colors" id="editClassColors">
+                    <!-- Color options will be inserted here -->
+                </div>
+            </div>
+            <input type="hidden" id="editClassId">
+            <div class="actions">
+                <button class="btn btn-full save-btn" id="saveClassChanges">Save Changes</button>
+                <button class="btn btn-full delete-btn" id="deleteClass">Delete Class</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Historical Attendance Modal -->
+    <div class="modal" id="historicalAttendanceModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-history"></i> Historical Attendance by Class</h3>
+                <button class="close-modal" id="closeHistoryModal">&times;</button>
+            </div>
+            
+            <div class="historical-filters">
+                <div class="form-group">
+                    <label>Date Range</label>
+                    <div class="date-range">
+                        <input type="date" id="startDate">
+                        <span>to</span>
+                        <input type="date" id="endDate">
+                    </div>
+                </div>
+                <div class="form-group" style="display: flex; align-items: flex-end;">
+                    <button class="btn" id="applyFilters">Apply Filters</button>
+                </div>
+            </div>
+            
+            <!-- View Mode Toggle -->
+            <div class="view-mode-toggle">
+                <button class="view-mode-btn active" data-view="class">
+                    <i class="fas fa-school"></i> View by Class
+                </button>
+                <button class="view-mode-btn" data-view="student">
+                    <i class="fas fa-user"></i> View by Student
+                </button>
+                <button class="view-mode-btn" data-view="table">
+                    <i class="fas fa-table"></i> Table View
+                </button>
+            </div>
+            
+            <!-- Class Tabs View -->
+            <div id="classTabsView" class="view-content active">
+                <div class="class-tabs" id="classTabs">
+                    <!-- Class tabs will be inserted here -->
+                </div>
+                
+                <div id="classHistorySections">
+                    <!-- Class history sections will be inserted here -->
+                </div>
+                
+                <div id="emptyClassHistory" class="empty-history" style="display: none;">
+                    <i class="fas fa-school"></i>
+                    <h3>No Classes Found</h3>
+                    <p>No classes have been created yet. Add classes first to view attendance history.</p>
+                </div>
+            </div>
+            
+            <!-- Student View -->
+            <div id="studentView" class="view-content" style="display: none;">
+                <div class="form-group">
+                    <label for="historyStudent">Select Student</label>
+                    <select id="historyStudent">
+                        <option value="">Select Student</option>
+                    </select>
+                </div>
+                
+                <div id="studentHistorySection">
+                    <!-- Student history will be inserted here -->
+                </div>
+                
+                <div id="emptyStudentHistory" class="empty-history" style="display: none;">
+                    <i class="fas fa-user"></i>
+                    <h3>No Student Selected</h3>
+                    <p>Select a student to view their attendance history.</p>
+                </div>
+            </div>
+            
+            <!-- Table View -->
+            <div id="tableView" class="view-content" style="display: none;">
+                <div class="attendance-stats" id="attendanceStats">
+                    <!-- Statistics will be inserted here -->
+                </div>
+                
+                <div class="history-table-container">
+                    <table id="historyTable">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Class</th>
+                                <th>Student Name</th>
+                                <th>Status</th>
+                                <th>Student ID</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historyTableBody">
+                            <!-- Historical data will be inserted here -->
+                        </tbody>
+                    </table>
+                    <div id="emptyHistoryMessage" class="empty-history" style="display: none;">
+                        <i class="fas fa-clipboard-list"></i>
+                        <h3>No Attendance Records Found</h3>
+                        <p>No attendance records match your current filters. Try adjusting your search criteria.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="margin-top: 20px; display: flex; justify-content: space-between;">
+                <div>
+                    <button class="btn delete-btn" id="clearFilters">
+                        <i class="fas fa-filter"></i> Clear Filters
+                    </button>
+                </div>
+                <div>
+                    <button class="btn export-btn" id="exportHistory">
+                        <i class="fas fa-download"></i> Export History
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize variables
+        let students = [];
+        let classes = [];
+        let attendanceRecords = [];
+        let studentIdCounter = 1001;
+        let classIdCounter = 1;
+        let isDarkMode = false;
+        let autoSaveTimer;
+        let lastSaveTime = null;
+        let selectedColor = "#28a745";
+        let currentViewMode = "class"; // "class", "student", or "table"
+        let currentFilters = {
+            class: 'all',
+            quickFilter: 'all',
+            search: ''
+        };
+
+        // DOM Elements
+        const themeToggle = document.getElementById('themeToggle');
+        const autoSaveIndicator = document.getElementById('autoSaveIndicator');
+        const lastSavedTimeElement = document.getElementById('lastSavedTime');
+        const editClassModal = document.getElementById('editClassModal');
+        const closeEditModal = document.getElementById('closeEditModal');
+        const historicalAttendanceModal = document.getElementById('historicalAttendanceModal');
+        const closeHistoryModal = document.getElementById('closeHistoryModal');
+        const viewHistoryBtn = document.getElementById('viewHistoryBtn');
+        const viewModeBtns = document.querySelectorAll('.view-mode-btn');
+        const filterToggle = document.getElementById('filterToggle');
+        const filterOptions = document.getElementById('filterOptions');
+        const applyFiltersBtn = document.getElementById('applyFiltersBtn');
+        const resetFiltersBtn = document.getElementById('resetFiltersBtn');
+        const studentSearch = document.getElementById('studentSearch');
+        const quickFilterBtns = document.querySelectorAll('.quick-filter-btn');
+
+        // Initialize date field with today's date
+        const today = new Date();
+        document.getElementById('attendanceDate').valueAsDate = today;
+        
+        // Set default date range for history (last 30 days)
+        const thirtyDaysAgo = new Date();
+        thirtyDaysAgo.setDate(today.getDate() - 30);
+        document.getElementById('startDate').valueAsDate = thirtyDaysAgo;
+        document.getElementById('endDate').valueAsDate = today;
+
+        // Default class colors
+        const defaultColors = [
+            "#28a745", "#007bff", "#ffc107", "#6f42c1", 
+            "#dc3545", "#17a2b8", "#fd7e14", "#20c997"
+        ];
+
+        // Initialize color selection
+        document.querySelectorAll('.color-option').forEach(colorOption => {
+            colorOption.addEventListener('click', function() {
+                document.querySelectorAll('.color-option').forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+                this.classList.add('selected');
+                selectedColor = this.getAttribute('data-color');
+            });
+        });
+
+        // View mode toggle functionality
+        viewModeBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const viewMode = this.getAttribute('data-view');
+                
+                // Update active button
+                viewModeBtns.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Update current view mode
+                currentViewMode = viewMode;
+                
+                // Show/hide view sections
+                document.getElementById('classTabsView').style.display = 'none';
+                document.getElementById('studentView').style.display = 'none';
+                document.getElementById('tableView').style.display = 'none';
+                
+                if (viewMode === 'class') {
+                    document.getElementById('classTabsView').style.display = 'block';
+                    updateClassHistoryView();
+                } else if (viewMode === 'student') {
+                    document.getElementById('studentView').style.display = 'block';
+                    updateStudentDropdown();
+                } else if (viewMode === 'table') {
+                    document.getElementById('tableView').style.display = 'block';
+                    applyHistoryFilters();
+                }
+            });
+        });
+
+        // Filter toggle functionality
+        filterToggle.addEventListener('click', function() {
+            const isCollapsed = filterOptions.classList.contains('collapsed');
+            
+            if (isCollapsed) {
+                filterOptions.classList.remove('collapsed');
+                this.innerHTML = '<i class="fas fa-chevron-up"></i><span>Hide Filters</span>';
+            } else {
+                filterOptions.classList.add('collapsed');
+                this.innerHTML = '<i class="fas fa-chevron-down"></i><span>Show Filters</span>';
+            }
+        });
+
+        // Quick filter button functionality
+        quickFilterBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const filterType = this.getAttribute('data-filter');
+                
+                // Update active button
+                quickFilterBtns.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Update current filter
+                currentFilters.quickFilter = filterType;
+                
+                // Apply filters
+                applyStudentFilters();
+            });
+        });
+
+        // Search functionality
+        studentSearch.addEventListener('input', function() {
+            currentFilters.search = this.value.toLowerCase();
+            applyStudentFilters();
+        });
+
+        // Apply filters button
+        applyFiltersBtn.addEventListener('click', applyStudentFilters);
+
+        // Reset filters button
+        resetFiltersBtn.addEventListener('click', function() {
+            // Reset all filters
+            currentFilters = {
+                class: 'all',
+                quickFilter: 'all',
+                search: ''
+            };
+            
+            // Reset UI
+            document.querySelectorAll('.class-pill').forEach(pill => pill.classList.remove('active'));
+            document.querySelector('.class-pill[data-class="all"]').classList.add('active');
+            
+            quickFilterBtns.forEach(btn => btn.classList.remove('active'));
+            document.querySelector('.quick-filter-btn[data-filter="all"]').classList.add('active');
+            
+            studentSearch.value = '';
+            
+            // Apply filters
+            applyStudentFilters();
+        });
+
+        // Load data from localStorage on page load
+        function loadFromLocalStorage() {
+            try {
+                // Load students data
+                const savedStudents = localStorage.getItem('classManagementSystem_students');
+                if (savedStudents) {
+                    students = JSON.parse(savedStudents);
+                    // Find the highest ID to set the counter correctly
+                    if (students.length > 0) {
+                        const maxId = Math.max(...students.map(s => s.id));
+                        studentIdCounter = maxId + 1;
+                    }
+                }
+                
+                // Load classes data
+                const savedClasses = localStorage.getItem('classManagementSystem_classes');
+                if (savedClasses) {
+                    classes = JSON.parse(savedClasses);
+                    // Find the highest ID to set the counter correctly
+                    if (classes.length > 0) {
+                        const maxId = Math.max(...classes.map(c => c.id));
+                        classIdCounter = maxId + 1;
+                    }
+                }
+                
+                // Load attendance data
+                const savedAttendance = localStorage.getItem('classManagementSystem_attendance');
+                if (savedAttendance) {
+                    attendanceRecords = JSON.parse(savedAttendance);
+                }
+                
+                // Load dark mode preference
+                const savedDarkMode = localStorage.getItem('classManagementSystem_darkMode');
+                if (savedDarkMode === 'true') {
+                    isDarkMode = true;
+                    document.body.classList.add('dark-mode');
+                    themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+                }
+                
+                // Load last save time
+                const savedTime = localStorage.getItem('classManagementSystem_lastSaveTime');
+                if (savedTime) {
+                    lastSaveTime = new Date(savedTime);
+                    updateLastSavedTime();
+                }
+                
+                console.log('Data loaded from localStorage');
+                showAutoSaveIndicator();
+                updateAllDisplays();
+            } catch (error) {
+                console.error('Error loading data from localStorage:', error);
+                // If there's an error, initialize with sample data
+                initializeSampleData();
+            }
+        }
+
+        // Save data to localStorage
+        function saveToLocalStorage() {
+            try {
+                localStorage.setItem('classManagementSystem_students', JSON.stringify(students));
+                localStorage.setItem('classManagementSystem_classes', JSON.stringify(classes));
+                localStorage.setItem('classManagementSystem_attendance', JSON.stringify(attendanceRecords));
+                localStorage.setItem('classManagementSystem_darkMode', isDarkMode);
+                
+                lastSaveTime = new Date();
+                localStorage.setItem('classManagementSystem_lastSaveTime', lastSaveTime.toISOString());
+                
+                updateLastSavedTime();
+                showAutoSaveIndicator();
+                
+                console.log('Data saved to localStorage');
+            } catch (error) {
+                console.error('Error saving data to localStorage:', error);
+            }
+        }
+
+        // Show auto-save indicator
+        function showAutoSaveIndicator() {
+            autoSaveIndicator.classList.add('show');
+            setTimeout(() => {
+                autoSaveIndicator.classList.remove('show');
+            }, 2000);
+        }
+
+        // Update last saved time display
+        function updateLastSavedTime() {
+            if (lastSaveTime) {
+                const timeString = lastSaveTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                const dateString = lastSaveTime.toLocaleDateString();
+                lastSavedTimeElement.textContent = `${dateString} at ${timeString}`;
+            } else {
+                lastSavedTimeElement.textContent = 'Never';
+            }
+        }
+
+        // Auto-save function (called when data changes)
+        function autoSave() {
+            // Clear any existing timer
+            if (autoSaveTimer) {
+                clearTimeout(autoSaveTimer);
+            }
+            
+            // Set new timer to save after 2 seconds of inactivity
+            autoSaveTimer = setTimeout(() => {
+                saveToLocalStorage();
+            }, 2000);
+        }
+
+        // Initialize with sample data if no data exists
+        function initializeSampleData() {
+            if (classes.length === 0) {
+                classes = [
+                    { id: 1, name: "Grade 10-A", color: "#28a745" },
+                    { id: 2, name: "Grade 10-B", color: "#007bff" },
+                    { id: 3, name: "Grade 11-A", color: "#ffc107" },
+                    { id: 4, name: "Grade 11-B", color: "#6f42c1" }
+                ];
+                classIdCounter = 5;
+            }
+            
+            if (students.length === 0) {
+                students = [
+                    { id: 1001, name: "Ahmed Hassan", classId: 1 },
+                    { id: 1002, name: "Fatima Ali", classId: 1 },
+                    { id: 1003, name: "Omar Khalid", classId: 2 },
+                    { id: 1004, name: "Lina Mahmoud", classId: 2 },
+                    { id: 1005, name: "Youssef Samir", classId: 3 },
+                    { id: 1006, name: "Nour El-Din", classId: 3 },
+                    { id: 1007, name: "Hana Tarek", classId: 4 },
+                    { id: 1008, name: "Karim Adel", classId: 4 }
+                ];
+                studentIdCounter = 1009;
+            }
+            
+            // Add some sample attendance records
+            if (attendanceRecords.length === 0) {
+                const dates = [];
+                for (let i = 0; i < 10; i++) {
+                    const date = new Date();
+                    date.setDate(date.getDate() - i);
+                    dates.push(date.toISOString().split('T')[0]);
+                }
+                
+                dates.forEach(date => {
+                    students.forEach(student => {
+                        // Random attendance (80% present, 20% absent)
+                        const status = Math.random() > 0.2 ? 'present' : 'absent';
+                        attendanceRecords.push({
+                            studentId: student.id,
+                            date: date,
+                            classId: student.classId,
+                            status: status
+                        });
+                    });
+                });
+            }
+            
+            saveToLocalStorage();
+            updateAllDisplays();
+        }
+
+        // Get class name by ID
+        function getClassName(classId) {
+            const classObj = classes.find(c => c.id === classId);
+            return classObj ? classObj.name : "Unknown Class";
+        }
+
+        // Get class color by ID
+        function getClassColor(classId) {
+            const classObj = classes.find(c => c.id === classId);
+            return classObj ? classObj.color : "#cccccc";
+        }
+
+        // Toggle dark mode
+        themeToggle.addEventListener('click', function() {
+            isDarkMode = !isDarkMode;
+            document.body.classList.toggle('dark-mode', isDarkMode);
+            
+            // Update icon
+            if (isDarkMode) {
+                this.innerHTML = '<i class="fas fa-sun"></i>';
+            } else {
+                this.innerHTML = '<i class="fas fa-moon"></i>';
+            }
+            
+            // Save preference
+            autoSave();
+        });
+
+        // Close edit modal when clicking X
+        closeEditModal.addEventListener('click', function() {
+            editClassModal.style.display = 'none';
+        });
+
+        // Close history modal when clicking X
+        closeHistoryModal.addEventListener('click', function() {
+            historicalAttendanceModal.style.display = 'none';
+        });
+
+        // Close modals when clicking outside
+        window.addEventListener('click', function(event) {
+            if (event.target === editClassModal) {
+                editClassModal.style.display = 'none';
+            }
+            if (event.target === historicalAttendanceModal) {
+                historicalAttendanceModal.style.display = 'none';
+            }
+        });
+
+        // View historical attendance button
+        viewHistoryBtn.addEventListener('click', function() {
+            updateClassHistoryView();
+            updateStudentDropdown();
+            applyHistoryFilters();
+            historicalAttendanceModal.style.display = 'flex';
+        });
+
+        // Load initial data
+        loadFromLocalStorage();
+
+        // If no data was loaded, initialize with sample data
+        if (classes.length === 0 || students.length === 0) {
+            initializeSampleData();
+        }
+
+        // Add new class
+        document.getElementById('addClass').addEventListener('click', function() {
+            const className = document.getElementById('className').value.trim();
+
+            if (!className) {
+                alert('Please enter a class name.');
+                return;
+            }
+
+            // Check if class name already exists
+            if (classes.some(c => c.name.toLowerCase() === className.toLowerCase())) {
+                alert('A class with this name already exists.');
+                return;
+            }
+
+            const newClass = {
+                id: classIdCounter++,
+                name: className,
+                color: selectedColor
+            };
+
+            classes.push(newClass);
+            updateAllDisplays();
+            autoSave();
+            
+            // Clear form
+            document.getElementById('className').value = '';
+            
+            alert(`Class "${className}" added successfully!`);
+        });
+
+        // Register new student
+        document.getElementById('registerStudent').addEventListener('click', function() {
+            const name = document.getElementById('studentName').value.trim();
+            const classId = parseInt(document.getElementById('studentClass').value);
+
+            if (!name || !classId) {
+                alert('Please fill all fields correctly.');
+                return;
+            }
+
+            const newStudent = {
+                id: studentIdCounter++,
+                name: name,
+                classId: classId
+            };
+
+            students.push(newStudent);
+            updateAllDisplays();
+            autoSave();
+            
+            // Clear form
+            document.getElementById('studentName').value = '';
+            document.getElementById('studentClass').value = '';
+            
+            alert(`Student ${name} registered successfully with ID: ${newStudent.id}`);
+        });
+
+        // Move student to another class
+        document.getElementById('moveToClass').addEventListener('click', function() {
+            const studentId = parseInt(document.getElementById('moveStudent').value);
+            const newClassId = parseInt(document.getElementById('newClass').value);
+
+            if (!studentId || !newClassId) {
+                alert('Please select both a student and a new class.');
+                return;
+            }
+
+            const student = students.find(s => s.id === studentId);
+            if (student) {
+                const oldClassName = getClassName(student.classId);
+                const newClassName = getClassName(newClassId);
+                student.classId = newClassId;
+                updateAllDisplays();
+                autoSave();
+                alert(`Student ${student.name} moved from ${oldClassName} to ${newClassName}`);
+                
+                // Clear form
+                document.getElementById('moveStudent').value = '';
+                document.getElementById('newClass').value = '';
+            }
+        });
+
+        // Load attendance for selected class
+        document.getElementById('attendanceClass').addEventListener('change', function() {
+            const selectedClassId = parseInt(this.value);
+            if (selectedClassId) {
+                loadAttendanceTable(selectedClassId);
+                document.getElementById('attendanceTableContainer').style.display = 'block';
+                updateAttendanceDisplay();
+            } else {
+                document.getElementById('attendanceTableContainer').style.display = 'none';
+            }
+        });
+
+        // Save attendance
+        document.getElementById('saveAttendance').addEventListener('click', function() {
+            const attendanceDate = document.getElementById('attendanceDate').value;
+            const attendanceClassId = parseInt(document.getElementById('attendanceClass').value);
+            
+            if (!attendanceDate || !attendanceClassId) {
+                alert('Please select both a date and a class.');
+                return;
+            }
+
+            // Get all attendance statuses
+            const attendanceRows = document.querySelectorAll('#attendanceTableBody tr');
+            const todayRecords = [];
+
+            attendanceRows.forEach(row => {
+                const studentId = parseInt(row.getAttribute('data-id'));
+                const statusSelect = row.querySelector('.attendance-status');
+                const status = statusSelect.value;
+
+                todayRecords.push({
+                    studentId: studentId,
+                    date: attendanceDate,
+                    classId: attendanceClassId,
+                    status: status
+                });
+            });
+
+            // Remove existing records for this date and class
+            attendanceRecords = attendanceRecords.filter(record => 
+                !(record.date === attendanceDate && record.classId === attendanceClassId)
+            );
+
+            // Add new records
+            attendanceRecords.push(...todayRecords);
+            
+            updateAttendanceDisplay();
+            autoSave();
+            alert(`Attendance saved for ${getClassName(attendanceClassId)} on ${attendanceDate}`);
+        });
+
+        // Manual save button
+        document.getElementById('manualSave').addEventListener('click', function() {
+            saveToLocalStorage();
+            alert('Data manually saved successfully!');
+        });
+
+        // Load data button
+        document.getElementById('loadData').addEventListener('click', function() {
+            if (confirm('This will reload the last saved data. Any unsaved changes will be lost. Continue?')) {
+                loadFromLocalStorage();
+                alert('Data loaded successfully!');
+            }
+        });
+
+        // Export data button
+        document.getElementById('exportData').addEventListener('click', function() {
+            const dataToExport = {
+                students: students,
+                classes: classes,
+                attendanceRecords: attendanceRecords,
+                exportDate: new Date().toISOString(),
+                systemName: "School Class Management System"
+            };
+            
+            const dataStr = JSON.stringify(dataToExport, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+            
+            const exportFileDefaultName = `class_management_data_${new Date().toISOString().slice(0,10)}.json`;
+            
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportFileDefaultName);
+            linkElement.click();
+            
+            alert('Data exported successfully!');
+        });
+
+        // Import data from file
+        document.getElementById('importData').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importedData = JSON.parse(e.target.result);
+                    
+                    if (confirm('This will replace all current data. Continue?')) {
+                        if (importedData.students) {
+                            students = importedData.students;
+                            // Find the highest ID to set the counter correctly
+                            if (students.length > 0) {
+                                const maxId = Math.max(...students.map(s => s.id));
+                                studentIdCounter = maxId + 1;
+                            }
+                        }
+                        
+                        if (importedData.classes) {
+                            classes = importedData.classes;
+                            // Find the highest ID to set the counter correctly
+                            if (classes.length > 0) {
+                                const maxId = Math.max(...classes.map(c => c.id));
+                                classIdCounter = maxId + 1;
+                            }
+                        }
+                        
+                        if (importedData.attendanceRecords) {
+                            attendanceRecords = importedData.attendanceRecords;
+                        }
+                        
+                        saveToLocalStorage();
+                        updateAllDisplays();
+                        alert('Data imported successfully!');
+                    }
+                } catch (error) {
+                    alert('Error importing file. Please make sure it is a valid JSON file exported from this system.');
+                    console.error('Import error:', error);
+                }
+                
+                // Reset file input
+                event.target.value = '';
+            };
+            
+            reader.readAsText(file);
+        });
+
+        // Clear all data
+        document.getElementById('clearData').addEventListener('click', function() {
+            if (confirm('WARNING: This will permanently delete all students, classes, attendance records, and settings. This action cannot be undone. Continue?')) {
+                if (confirm('ARE YOU ABSOLUTELY SURE? All data will be lost.')) {
+                    localStorage.clear();
+                    students = [];
+                    classes = [];
+                    attendanceRecords = [];
+                    studentIdCounter = 1001;
+                    classIdCounter = 1;
+                    isDarkMode = false;
+                    document.body.classList.remove('dark-mode');
+                    themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+                    
+                    initializeSampleData();
+                    alert('All data cleared. System reset to default sample data.');
+                }
+            }
+        });
+
+        // Update all displays
+        function updateAllDisplays() {
+            updateClassDropdowns();
+            updateClassesList();
+            updateClassFilterPills();
+            applyStudentFilters();
+            updateStudentDropdown();
+            updateClassSummary();
+            updateAttendanceDisplay();
+            
+            // If attendance table is visible, reload it
+            const attendanceClass = document.getElementById('attendanceClass').value;
+            if (attendanceClass) {
+                loadAttendanceTable(parseInt(attendanceClass));
+            }
+        }
+
+        // Update all class dropdowns
+        function updateClassDropdowns() {
+            const studentClassSelect = document.getElementById('studentClass');
+            const newClassSelect = document.getElementById('newClass');
+            const attendanceClassSelect = document.getElementById('attendanceClass');
+            
+            // Clear all dropdowns
+            studentClassSelect.innerHTML = '<option value="">Select Class</option>';
+            newClassSelect.innerHTML = '<option value="">Select New Class</option>';
+            attendanceClassSelect.innerHTML = '<option value="">Select Class</option>';
+            
+            // Add classes to all dropdowns
+            classes.forEach(classItem => {
+                const option1 = document.createElement('option');
+                option1.value = classItem.id;
+                option1.textContent = classItem.name;
+                studentClassSelect.appendChild(option1.cloneNode(true));
+                
+                const option2 = option1.cloneNode(true);
+                newClassSelect.appendChild(option2);
+                
+                const option4 = option1.cloneNode(true);
+                attendanceClassSelect.appendChild(option4);
+            });
+        }
+
+        // Update classes list display
+        function updateClassesList() {
+            const classesList = document.getElementById('classesList');
+            classesList.innerHTML = '';
+            
+            classes.forEach(classItem => {
+                const card = document.createElement('div');
+                card.className = 'summary-card';
+                card.style.borderLeft = `5px solid ${classItem.color}`;
+                
+                // Count students in this class
+                const studentCount = students.filter(s => s.classId === classItem.id).length;
+                
+                card.innerHTML = `
+                    <div class="class-actions">
+                        <button class="edit-btn btn-small" onclick="openEditClassModal(${classItem.id})">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                    </div>
+                    <h4>${classItem.name}</h4>
+                    <div class="count">${studentCount}</div>
+                    <span>students</span>
+                `;
+                classesList.appendChild(card);
+            });
+        }
+
+        // Update class filter pills
+        function updateClassFilterPills() {
+            const classFilterPills = document.getElementById('classFilterPills');
+            classFilterPills.innerHTML = '';
+            
+            // Add "All Classes" pill
+            const allPill = document.createElement('div');
+            allPill.className = 'class-pill active';
+            allPill.setAttribute('data-class', 'all');
+            allPill.innerHTML = `
+                <i class="fas fa-users"></i>
+                All Classes
+                <span class="student-count-badge">${students.length}</span>
+            `;
+            
+            allPill.addEventListener('click', function() {
+                // Update active pill
+                document.querySelectorAll('.class-pill').forEach(pill => pill.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Update current filter
+                currentFilters.class = 'all';
+                
+                // Apply filters
+                applyStudentFilters();
+            });
+            
+            classFilterPills.appendChild(allPill);
+            
+            // Add pills for each class
+            classes.forEach(classItem => {
+                // Count students in this class
+                const studentCount = students.filter(s => s.classId === classItem.id).length;
+                
+                const pill = document.createElement('div');
+                pill.className = 'class-pill';
+                pill.setAttribute('data-class', classItem.id);
+                pill.style.borderColor = classItem.color;
+                pill.innerHTML = `
+                    <span class="class-pill-badge" style="background-color: ${classItem.color}"></span>
+                    ${classItem.name}
+                    <span class="student-count-badge">${studentCount}</span>
+                `;
+                
+                pill.addEventListener('click', function() {
+                    // Update active pill
+                    document.querySelectorAll('.class-pill').forEach(pill => pill.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Update pill style when active
+                    this.style.backgroundColor = classItem.color;
+                    this.style.color = 'white';
+                    
+                    // Update current filter
+                    currentFilters.class = classItem.id;
+                    
+                    // Apply filters
+                    applyStudentFilters();
+                });
+                
+                // Reset pill style when not active
+                pill.addEventListener('mouseleave', function() {
+                    if (!this.classList.contains('active')) {
+                        this.style.backgroundColor = '';
+                        this.style.color = '';
+                    }
+                });
+                
+                classFilterPills.appendChild(pill);
+            });
+        }
+
+        // Apply student filters
+        function applyStudentFilters() {
+            let filteredStudents = students;
+            const noStudentsMessage = document.getElementById('noStudentsMessage');
+            const activeFilters = document.getElementById('activeFilters');
+            const filterTags = document.getElementById('filterTags');
+            const studentCount = document.getElementById('studentCount');
+            
+            // Apply class filter
+            if (currentFilters.class !== 'all') {
+                const classId = parseInt(currentFilters.class);
+                filteredStudents = filteredStudents.filter(student => student.classId === classId);
+            }
+            
+            // Apply quick filter
+            if (currentFilters.quickFilter === 'no-class') {
+                filteredStudents = filteredStudents.filter(student => !student.classId);
+            } else if (currentFilters.quickFilter === 'recent') {
+                // Show last 10 added students
+                const recentStudents = [...students].sort((a, b) => b.id - a.id).slice(0, 10);
+                filteredStudents = filteredStudents.filter(student => 
+                    recentStudents.some(rs => rs.id === student.id)
+                );
+            }
+            
+            // Apply search filter
+            if (currentFilters.search) {
+                filteredStudents = filteredStudents.filter(student => 
+                    student.name.toLowerCase().includes(currentFilters.search)
+                );
+            }
+            
+            // Update students table
+            updateStudentsTable(filteredStudents);
+            
+            // Update filter tags and student count
+            filterTags.innerHTML = '';
+            const tags = [];
+            
+            if (currentFilters.class !== 'all') {
+                const classItem = classes.find(c => c.id === parseInt(currentFilters.class));
+                if (classItem) {
+                    tags.push(`<span class="class-pill" style="background-color: ${classItem.color}20; color: ${classItem.color}; border-color: ${classItem.color}; padding: 4px 10px; border-radius: 12px; font-size: 0.8rem;">${classItem.name}</span>`);
+                }
+            }
+            
+            if (currentFilters.quickFilter !== 'all') {
+                const filterText = currentFilters.quickFilter === 'no-class' ? 'No Class Assigned' : 'Recently Added';
+                tags.push(`<span style="background-color: var(--info-color)20; color: var(--info-color); padding: 4px 10px; border-radius: 12px; font-size: 0.8rem;">${filterText}</span>`);
+            }
+            
+            if (currentFilters.search) {
+                tags.push(`<span style="background-color: var(--warning-color)20; color: var(--warning-color); padding: 4px 10px; border-radius: 12px; font-size: 0.8rem;">Search: "${currentFilters.search}"</span>`);
+            }
+            
+            filterTags.innerHTML = tags.join('');
+            studentCount.textContent = `${filteredStudents.length} students`;
+            
+            // Show/hide active filters and no students message
+            if (tags.length > 0) {
+                activeFilters.style.display = 'block';
+            } else {
+                activeFilters.style.display = 'none';
+            }
+            
+            if (filteredStudents.length === 0) {
+                noStudentsMessage.style.display = 'block';
+            } else {
+                noStudentsMessage.style.display = 'none';
+            }
+        }
+
+        // Update students table
+        function updateStudentsTable(filteredStudents = students) {
+            const tbody = document.getElementById('studentsTableBody');
+            tbody.innerHTML = '';
+
+            filteredStudents.forEach(student => {
+                const row = document.createElement('tr');
+                const className = getClassName(student.classId);
+                const classColor = getClassColor(student.classId);
+                
+                row.innerHTML = `
+                    <td><span class="student-id">${student.id}</span></td>
+                    <td>${student.name}</td>
+                    <td>
+                        ${student.classId ? 
+                            `<span class="class-badge" style="background-color: ${classColor}20; color: ${classColor}; border: 1px solid ${classColor}40;">
+                                ${className}
+                            </span>` :
+                            '<span style="color: var(--text-secondary); font-style: italic;">No class assigned</span>'
+                        }
+                    </td>
+                    <td class="actions">
+                        <button class="edit-btn" onclick="editStudent(${student.id})">Edit</button>
+                        <button class="delete-btn" onclick="deleteStudent(${student.id})">Delete</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Update student dropdown for moving
+        function updateStudentDropdown() {
+            const dropdown = document.getElementById('moveStudent');
+            dropdown.innerHTML = '<option value="">Select Student to Move</option>';
+            
+            students.forEach(student => {
+                const className = getClassName(student.classId);
+                const option = document.createElement('option');
+                option.value = student.id;
+                option.textContent = `${student.name} (ID: ${student.id}, ${className})`;
+                dropdown.appendChild(option);
+            });
+        }
+
+        // Update class summary
+        function updateClassSummary() {
+            const summaryDiv = document.getElementById('classSummary');
+            summaryDiv.innerHTML = '';
+            
+            // Create summary cards for each class
+            classes.forEach(classItem => {
+                const studentCount = students.filter(s => s.classId === classItem.id).length;
+                const card = document.createElement('div');
+                card.className = 'summary-card';
+                card.style.borderLeft = `5px solid ${classItem.color}`;
+                card.innerHTML = `
+                    <h4>${classItem.name}</h4>
+                    <div class="count">${studentCount}</div>
+                    <span>students</span>
+                `;
+                summaryDiv.appendChild(card);
+            });
+            
+            // Add total card
+            const totalCard = document.createElement('div');
+            totalCard.className = 'summary-card';
+            totalCard.style.borderLeft = '5px solid var(--primary-color)';
+            totalCard.innerHTML = `
+                <h4>Total Students</h4>
+                <div class="count">${students.length}</div>
+                <span>all classes</span>
+            `;
+            summaryDiv.appendChild(totalCard);
+        }
+
+        // Load attendance table
+        function loadAttendanceTable(selectedClassId) {
+            const tbody = document.getElementById('attendanceTableBody');
+            tbody.innerHTML = '';
+            
+            const classStudents = students.filter(student => student.classId === selectedClassId);
+            const attendanceDate = document.getElementById('attendanceDate').value;
+            
+            classStudents.forEach(student => {
+                const row = document.createElement('tr');
+                row.setAttribute('data-id', student.id);
+                
+                // Check if there's existing attendance for this student on this date
+                const existingRecord = attendanceRecords.find(record => 
+                    record.studentId === student.id && 
+                    record.date === attendanceDate && 
+                    record.classId === selectedClassId
+                );
+                
+                const status = existingRecord ? existingRecord.status : 'present';
+                
+                row.innerHTML = `
+                    <td><span class="student-id">${student.id}</span></td>
+                    <td>${student.name}</td>
+                    <td>
+                        <select class="attendance-status">
+                            <option value="present" ${status === 'present' ? 'selected' : ''}>Present</option>
+                            <option value="absent" ${status === 'absent' ? 'selected' : ''}>Absent</option>
+                        </select>
+                    </td>
+                    <td>
+                        <span class="status-indicator ${status === 'present' ? 'present' : 'absent'}"></span>
+                        ${status === 'present' ? 'Present' : 'Absent'}
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+            
+            // Add event listeners to attendance status changes
+            document.querySelectorAll('.attendance-status').forEach(select => {
+                select.addEventListener('change', function() {
+                    const row = this.closest('tr');
+                    const statusIndicator = row.querySelector('.status-indicator');
+                    const statusText = row.querySelector('td:last-child');
+                    
+                    if (this.value === 'present') {
+                        statusIndicator.className = 'status-indicator present';
+                        statusText.innerHTML = '<span class="status-indicator present"></span>Present';
+                    } else {
+                        statusIndicator.className = 'status-indicator absent';
+                        statusText.innerHTML = '<span class="status-indicator absent"></span>Absent';
+                    }
+                    
+                    // Update attendance display
+                    updateAttendanceDisplay();
+                    // Auto-save when attendance status changes
+                    autoSave();
+                });
+            });
+        }
+
+        // Update attendance display
+        function updateAttendanceDisplay() {
+            const attendanceDate = document.getElementById('attendanceDate').value;
+            const attendanceClassId = parseInt(document.getElementById('attendanceClass').value);
+            
+            const presentList = document.getElementById('presentList');
+            const absentList = document.getElementById('absentList');
+            
+            presentList.innerHTML = '';
+            absentList.innerHTML = '';
+            
+            if (!attendanceDate || !attendanceClassId) {
+                presentList.innerHTML = '<div class="attendance-item">Select a date and class first</div>';
+                return;
+            }
+            
+            // Get records for the selected date and class
+            const todayRecords = attendanceRecords.filter(record => 
+                record.date === attendanceDate && record.classId === attendanceClassId
+            );
+            
+            if (todayRecords.length === 0) {
+                presentList.innerHTML = '<div class="attendance-item">No attendance recorded yet</div>';
+                return;
+            }
+            
+            // Separate present and absent students
+            const presentStudents = [];
+            const absentStudents = [];
+            
+            todayRecords.forEach(record => {
+                const student = students.find(s => s.id === record.studentId);
+                if (student) {
+                    if (record.status === 'present') {
+                        presentStudents.push(student);
+                    } else {
+                        absentStudents.push(student);
+                    }
+                }
+            });
+            
+            // Display present students
+            if (presentStudents.length > 0) {
+                presentStudents.forEach(student => {
+                    const item = document.createElement('div');
+                    item.className = 'attendance-item';
+                    item.innerHTML = `
+                        <span>${student.name}</span>
+                        <span class="attendance-present">Present</span>
+                    `;
+                    presentList.appendChild(item);
+                });
+            } else {
+                presentList.innerHTML = '<div class="attendance-item">No students present</div>';
+            }
+            
+            // Display absent students
+            if (absentStudents.length > 0) {
+                absentStudents.forEach(student => {
+                    const item = document.createElement('div');
+                    item.className = 'attendance-item';
+                    item.innerHTML = `
+                        <span>${student.name}</span>
+                        <span class="attendance-absent">Absent</span>
+                    `;
+                    absentList.appendChild(item);
+                });
+            } else {
+                absentList.innerHTML = '<div class="attendance-item">No students absent</div>';
+            }
+        }
+
+        // Update class history view
+        function updateClassHistoryView() {
+            const classTabs = document.getElementById('classTabs');
+            const classHistorySections = document.getElementById('classHistorySections');
+            const emptyClassHistory = document.getElementById('emptyClassHistory');
+            
+            classTabs.innerHTML = '';
+            classHistorySections.innerHTML = '';
+            
+            if (classes.length === 0) {
+                emptyClassHistory.style.display = 'block';
+                return;
+            }
+            
+            emptyClassHistory.style.display = 'none';
+            
+            // Create tabs for each class
+            classes.forEach((classItem, index) => {
+                // Create tab
+                const tab = document.createElement('div');
+                tab.className = `class-tab ${index === 0 ? 'active' : ''}`;
+                tab.setAttribute('data-class-id', classItem.id);
+                tab.innerHTML = `
+                    <span class="class-tab-badge" style="background-color: ${classItem.color}"></span>
+                    ${classItem.name}
+                `;
+                
+                tab.addEventListener('click', function() {
+                    // Update active tab
+                    document.querySelectorAll('.class-tab').forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Show corresponding section
+                    const classId = parseInt(this.getAttribute('data-class-id'));
+                    document.querySelectorAll('.class-history-section').forEach(s => s.classList.remove('active'));
+                    document.getElementById(`class-section-${classId}`).classList.add('active');
+                });
+                
+                classTabs.appendChild(tab);
+                
+                // Create class history section
+                const section = document.createElement('div');
+                section.id = `class-section-${classItem.id}`;
+                section.className = `class-history-section ${index === 0 ? 'active' : ''}`;
+                
+                // Get students in this class
+                const classStudents = students.filter(s => s.classId === classItem.id);
+                
+                if (classStudents.length === 0) {
+                    section.innerHTML = `
+                        <div class="empty-history">
+                            <i class="fas fa-users"></i>
+                            <h3>No Students in This Class</h3>
+                            <p>Add students to ${classItem.name} to view their attendance history.</p>
+                        </div>
+                    `;
+                } else {
+                    // Create header
+                    const header = document.createElement('div');
+                    header.className = 'class-history-header';
+                    header.innerHTML = `
+                        <h4>
+                            <span class="class-tab-badge" style="background-color: ${classItem.color}"></span>
+                            ${classItem.name} - ${classStudents.length} Students
+                        </h4>
+                    `;
+                    section.appendChild(header);
+                    
+                    // Create students list
+                    const studentsList = document.createElement('div');
+                    studentsList.className = 'class-students-list';
+                    
+                    classStudents.forEach(student => {
+                        const studentCard = createStudentAttendanceCard(student, classItem.id);
+                        studentsList.appendChild(studentCard);
+                    });
+                    
+                    section.appendChild(studentsList);
+                }
+                
+                classHistorySections.appendChild(section);
+            });
+        }
+
+        // Create student attendance card
+        function createStudentAttendanceCard(student, classId) {
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+            
+            // Get attendance records for this student within date range
+            let studentRecords = attendanceRecords.filter(record => 
+                record.studentId === student.id && 
+                record.classId === classId
+            );
+            
+            // Filter by date range
+            if (startDate) {
+                studentRecords = studentRecords.filter(record => record.date >= startDate);
+            }
+            if (endDate) {
+                studentRecords = studentRecords.filter(record => record.date <= endDate);
+            }
+            
+            // Sort by date (newest first)
+            studentRecords.sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            // Calculate statistics
+            const totalRecords = studentRecords.length;
+            const presentRecords = studentRecords.filter(r => r.status === 'present').length;
+            const absentRecords = studentRecords.filter(r => r.status === 'absent').length;
+            const attendanceRate = totalRecords > 0 ? Math.round((presentRecords / totalRecords) * 100) : 0;
+            
+            const card = document.createElement('div');
+            card.className = 'student-attendance-card';
+            
+            card.innerHTML = `
+                <div class="student-attendance-header">
+                    <h5>${student.name}</h5>
+                    <span class="student-id-small">ID: ${student.id}</span>
+                </div>
+                
+                <div class="student-attendance-stats">
+                    <div class="student-stat">
+                        <div class="student-stat-label">Total Days</div>
+                        <div class="student-stat-value">${totalRecords}</div>
+                    </div>
+                    <div class="student-stat">
+                        <div class="student-stat-label">Present</div>
+                        <div class="student-stat-value" style="color: var(--success-color);">${presentRecords}</div>
+                    </div>
+                    <div class="student-stat">
+                        <div class="student-stat-label">Attendance</div>
+                        <div class="student-stat-value">${attendanceRate}%</div>
+                    </div>
+                </div>
+                
+                <div class="student-attendance-dates">
+                    ${totalRecords === 0 ? 
+                        '<div style="text-align: center; padding: 20px; color: var(--text-secondary);">No attendance records found</div>' :
+                        studentRecords.map(record => `
+                            <div class="attendance-date-item">
+                                <span class="attendance-date">${record.date}</span>
+                                <span class="attendance-status-badge ${record.status === 'present' ? 'status-present' : 'status-absent'}">
+                                    ${record.status === 'present' ? 'Present' : 'Absent'}
+                                </span>
+                            </div>
+                        `).join('')
+                    }
+                </div>
+            `;
+            
+            return card;
+        }
+
+        // Update student dropdown in history view
+        function updateStudentDropdown() {
+            const historyStudentSelect = document.getElementById('historyStudent');
+            historyStudentSelect.innerHTML = '<option value="">Select Student</option>';
+            
+            students.forEach(student => {
+                const className = getClassName(student.classId);
+                const option = document.createElement('option');
+                option.value = student.id;
+                option.textContent = `${student.name} (${className})`;
+                historyStudentSelect.appendChild(option);
+            });
+            
+            // Add event listener for student selection
+            historyStudentSelect.addEventListener('change', function() {
+                const studentId = parseInt(this.value);
+                if (studentId) {
+                    updateStudentHistoryView(studentId);
+                } else {
+                    document.getElementById('emptyStudentHistory').style.display = 'block';
+                    document.getElementById('studentHistorySection').innerHTML = '';
+                }
+            });
+        }
+
+        // Update student history view
+        function updateStudentHistoryView(studentId) {
+            const student = students.find(s => s.id === studentId);
+            if (!student) return;
+            
+            const studentHistorySection = document.getElementById('studentHistorySection');
+            const emptyStudentHistory = document.getElementById('emptyStudentHistory');
+            
+            emptyStudentHistory.style.display = 'none';
+            
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+            
+            // Get attendance records for this student
+            let studentRecords = attendanceRecords.filter(record => record.studentId === studentId);
+            
+            // Filter by date range
+            if (startDate) {
+                studentRecords = studentRecords.filter(record => record.date >= startDate);
+            }
+            if (endDate) {
+                studentRecords = studentRecords.filter(record => record.date <= endDate);
+            }
+            
+            // Sort by date (newest first)
+            studentRecords.sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            if (studentRecords.length === 0) {
+                studentHistorySection.innerHTML = `
+                    <div class="empty-history">
+                        <i class="fas fa-user"></i>
+                        <h3>No Attendance Records</h3>
+                        <p>No attendance records found for ${student.name} in the selected date range.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Group records by class
+            const recordsByClass = {};
+            studentRecords.forEach(record => {
+                if (!recordsByClass[record.classId]) {
+                    recordsByClass[record.classId] = [];
+                }
+                recordsByClass[record.classId].push(record);
+            });
+            
+            let html = `
+                <div class="student-attendance-card">
+                    <div class="student-attendance-header">
+                        <h5>${student.name}</h5>
+                        <span class="student-id-small">ID: ${student.id}</span>
+                    </div>
+            `;
+            
+            // Add overall statistics
+            const totalRecords = studentRecords.length;
+            const presentRecords = studentRecords.filter(r => r.status === 'present').length;
+            const attendanceRate = totalRecords > 0 ? Math.round((presentRecords / totalRecords) * 100) : 0;
+            
+            html += `
+                <div class="student-attendance-stats">
+                    <div class="student-stat">
+                        <div class="student-stat-label">Total Days</div>
+                        <div class="student-stat-value">${totalRecords}</div>
+                    </div>
+                    <div class="student-stat">
+                        <div class="student-stat-label">Present</div>
+                        <div class="student-stat-value" style="color: var(--success-color);">${presentRecords}</div>
+                    </div>
+                    <div class="student-stat">
+                        <div class="student-stat-label">Absent</div>
+                        <div class="student-stat-value" style="color: var(--danger-color);">${totalRecords - presentRecords}</div>
+                    </div>
+                    <div class="student-stat">
+                        <div class="student-stat-label">Attendance Rate</div>
+                        <div class="student-stat-value">${attendanceRate}%</div>
+                    </div>
+                </div>
+            `;
+            
+            // Add attendance by class
+            for (const classId in recordsByClass) {
+                const classRecords = recordsByClass[classId];
+                const className = getClassName(parseInt(classId));
+                const classColor = getClassColor(parseInt(classId));
+                const classPresent = classRecords.filter(r => r.status === 'present').length;
+                const classAttendanceRate = classRecords.length > 0 ? Math.round((classPresent / classRecords.length) * 100) : 0;
+                
+                html += `
+                    <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid var(--border-color);">
+                        <h5 style="margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
+                            <span class="class-tab-badge" style="background-color: ${classColor}"></span>
+                            ${className}
+                        </h5>
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 15px;">
+                            <div>
+                                <div style="font-size: 0.9rem; color: var(--text-secondary);">Records</div>
+                                <div style="font-size: 1.2rem; font-weight: bold;">${classRecords.length}</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 0.9rem; color: var(--text-secondary);">Attendance</div>
+                                <div style="font-size: 1.2rem; font-weight: bold;">${classAttendanceRate}%</div>
+                            </div>
+                        </div>
+                        <div class="student-attendance-dates">
+                            ${classRecords.map(record => `
+                                <div class="attendance-date-item">
+                                    <span class="attendance-date">${record.date}</span>
+                                    <span class="attendance-status-badge ${record.status === 'present' ? 'status-present' : 'status-absent'}">
+                                        ${record.status === 'present' ? 'Present' : 'Absent'}
+                                    </span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            html += `</div>`;
+            studentHistorySection.innerHTML = html;
+        }
+
+        // Apply history filters
+        function applyHistoryFilters() {
+            if (currentViewMode === 'class') {
+                updateClassHistoryView();
+            } else if (currentViewMode === 'student') {
+                const selectedStudent = document.getElementById('historyStudent').value;
+                if (selectedStudent) {
+                    updateStudentHistoryView(parseInt(selectedStudent));
+                }
+            } else if (currentViewMode === 'table') {
+                applyTableHistoryFilters();
+            }
+        }
+
+        // Apply table history filters
+        function applyTableHistoryFilters() {
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+            
+            // Filter attendance records
+            let filteredRecords = attendanceRecords;
+            
+            // Filter by date range
+            if (startDate) {
+                filteredRecords = filteredRecords.filter(record => record.date >= startDate);
+            }
+            if (endDate) {
+                filteredRecords = filteredRecords.filter(record => record.date <= endDate);
+            }
+            
+            // Sort by date (newest first)
+            filteredRecords.sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            // Update history table
+            updateHistoryTable(filteredRecords);
+            
+            // Update statistics
+            updateAttendanceStats(filteredRecords);
+        }
+
+        // Update history table
+        function updateHistoryTable(records) {
+            const tbody = document.getElementById('historyTableBody');
+            const emptyMessage = document.getElementById('emptyHistoryMessage');
+            
+            tbody.innerHTML = '';
+            
+            if (records.length === 0) {
+                emptyMessage.style.display = 'block';
+                return;
+            }
+            
+            emptyMessage.style.display = 'none';
+            
+            records.forEach(record => {
+                const student = students.find(s => s.id === record.studentId);
+                if (!student) return;
+                
+                const className = getClassName(record.classId);
+                const classColor = getClassColor(record.classId);
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${record.date}</td>
+                    <td>
+                        <span class="class-badge" style="background-color: ${classColor}20; color: ${classColor}; border: 1px solid ${classColor}40;">
+                            ${className}
+                        </span>
+                    </td>
+                    <td>${student.name}</td>
+                    <td>
+                        ${record.status === 'present' 
+                            ? '<span class="attendance-present">Present</span>' 
+                            : '<span class="attendance-absent">Absent</span>'
+                        }
+                    </td>
+                    <td><span class="student-id">${student.id}</span></td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Update attendance statistics
+        function updateAttendanceStats(records) {
+            const statsContainer = document.getElementById('attendanceStats');
+            
+            if (records.length === 0) {
+                statsContainer.innerHTML = '<div class="stat-card"><h4>No records found</h4></div>';
+                return;
+            }
+            
+            // Calculate statistics
+            const totalRecords = records.length;
+            const presentRecords = records.filter(r => r.status === 'present').length;
+            const absentRecords = records.filter(r => r.status === 'absent').length;
+            const attendanceRate = totalRecords > 0 ? Math.round((presentRecords / totalRecords) * 100) : 0;
+            
+            // Get unique dates
+            const uniqueDates = [...new Set(records.map(r => r.date))];
+            
+            // Get unique students
+            const uniqueStudents = [...new Set(records.map(r => r.studentId))];
+            
+            statsContainer.innerHTML = `
+                <div class="stat-card">
+                    <h4>Total Records</h4>
+                    <div class="stat-value">${totalRecords}</div>
+                </div>
+                <div class="stat-card">
+                    <h4>Present</h4>
+                    <div class="stat-value" style="color: var(--success-color);">${presentRecords}</div>
+                </div>
+                <div class="stat-card">
+                    <h4>Absent</h4>
+                    <div class="stat-value" style="color: var(--danger-color);">${absentRecords}</div>
+                </div>
+                <div class="stat-card">
+                    <h4>Attendance Rate</h4>
+                    <div class="stat-value">${attendanceRate}%</div>
+                </div>
+                <div class="stat-card">
+                    <h4>Days Recorded</h4>
+                    <div class="stat-value">${uniqueDates.length}</div>
+                </div>
+                <div class="stat-card">
+                    <h4>Students Tracked</h4>
+                    <div class="stat-value">${uniqueStudents.length}</div>
+                </div>
+            `;
+        }
+
+        // Open edit class modal
+        function openEditClassModal(classId) {
+            const classItem = classes.find(c => c.id === classId);
+            if (!classItem) return;
+            
+            document.getElementById('editClassName').value = classItem.name;
+            document.getElementById('editClassId').value = classId;
+            
+            // Set up color options
+            const editColorsContainer = document.getElementById('editClassColors');
+            editColorsContainer.innerHTML = '';
+            
+            defaultColors.forEach(color => {
+                const colorOption = document.createElement('div');
+                colorOption.className = `color-option ${color === classItem.color ? 'selected' : ''}`;
+                colorOption.style.backgroundColor = color;
+                colorOption.setAttribute('data-color', color);
+                colorOption.addEventListener('click', function() {
+                    document.querySelectorAll('#editClassColors .color-option').forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+                    this.classList.add('selected');
+                });
+                editColorsContainer.appendChild(colorOption);
+            });
+            
+            editClassModal.style.display = 'flex';
+        }
+
+        // Save class changes
+        document.getElementById('saveClassChanges').addEventListener('click', function() {
+            const classId = parseInt(document.getElementById('editClassId').value);
+            const newName = document.getElementById('editClassName').value.trim();
+            const selectedColorOption = document.querySelector('#editClassColors .color-option.selected');
+            const newColor = selectedColorOption ? selectedColorOption.getAttribute('data-color') : "#28a745";
+            
+            if (!newName) {
+                alert('Please enter a class name.');
+                return;
+            }
+            
+            const classItem = classes.find(c => c.id === classId);
+            if (classItem) {
+                // Check if new name already exists (excluding current class)
+                if (classes.some(c => c.id !== classId && c.name.toLowerCase() === newName.toLowerCase())) {
+                    alert('A class with this name already exists.');
+                    return;
+                }
+                
+                const oldName = classItem.name;
+                classItem.name = newName;
+                classItem.color = newColor;
+                
+                updateAllDisplays();
+                autoSave();
+                editClassModal.style.display = 'none';
+                alert(`Class "${oldName}" updated to "${newName}" successfully!`);
+            }
+        });
+
+        // Delete class
+        document.getElementById('deleteClass').addEventListener('click', function() {
+            const classId = parseInt(document.getElementById('editClassId').value);
+            const classItem = classes.find(c => c.id === classId);
+            
+            if (!classItem) return;
+            
+            // Check if class has students
+            const classStudents = students.filter(s => s.classId === classId);
+            
+            if (classStudents.length > 0) {
+                if (!confirm(`This class has ${classStudents.length} students. Deleting it will also delete these students. Are you sure?`)) {
+                    return;
+                }
+                
+                // Remove students in this class
+                students = students.filter(s => s.classId !== classId);
+                
+                // Remove attendance records for these students
+                const studentIds = classStudents.map(s => s.id);
+                attendanceRecords = attendanceRecords.filter(record => !studentIds.includes(record.studentId));
+            }
+            
+            // Remove the class
+            classes = classes.filter(c => c.id !== classId);
+            
+            updateAllDisplays();
+            autoSave();
+            editClassModal.style.display = 'none';
+            alert(`Class "${classItem.name}" deleted successfully!`);
+        });
+
+        // Edit student function
+        function editStudent(studentId) {
+            const student = students.find(s => s.id === studentId);
+            if (!student) return;
+            
+            const newName = prompt('Enter new name for the student:', student.name);
+            if (newName && newName.trim() !== '') {
+                student.name = newName.trim();
+                updateAllDisplays();
+                autoSave();
+                alert('Student name updated successfully!');
+            }
+        }
+
+        // Delete student function
+        function deleteStudent(studentId) {
+            if (confirm('Are you sure you want to delete this student? This action cannot be undone.')) {
+                const studentIndex = students.findIndex(s => s.id === studentId);
+                if (studentIndex !== -1) {
+                    const studentName = students[studentIndex].name;
+                    students.splice(studentIndex, 1);
+                    
+                    // Also remove attendance records for this student
+                    attendanceRecords = attendanceRecords.filter(record => record.studentId !== studentId);
+                    
+                    updateAllDisplays();
+                    autoSave();
+                    alert(`Student ${studentName} deleted successfully!`);
+                }
+            }
+        }
+
+        // Apply history filters button
+        document.getElementById('applyFilters').addEventListener('click', applyHistoryFilters);
+
+        // Clear history filters button
+        document.getElementById('clearFilters').addEventListener('click', function() {
+            document.getElementById('startDate').valueAsDate = thirtyDaysAgo;
+            document.getElementById('endDate').valueAsDate = today;
+            
+            if (currentViewMode === 'student') {
+                document.getElementById('historyStudent').value = '';
+            }
+            
+            applyHistoryFilters();
+        });
+
+        // Export history button
+        document.getElementById('exportHistory').addEventListener('click', function() {
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+            
+            // Get filtered records based on current view mode
+            let filteredRecords = attendanceRecords;
+            
+            // Filter by date range
+            if (startDate) {
+                filteredRecords = filteredRecords.filter(record => record.date >= startDate);
+            }
+            if (endDate) {
+                filteredRecords = filteredRecords.filter(record => record.date <= endDate);
+            }
+            
+            // If in student view, filter by selected student
+            if (currentViewMode === 'student') {
+                const selectedStudentId = parseInt(document.getElementById('historyStudent').value);
+                if (selectedStudentId) {
+                    filteredRecords = filteredRecords.filter(record => record.studentId === selectedStudentId);
+                }
+            }
+            
+            // Enhance records with student and class names
+            const enhancedRecords = filteredRecords.map(record => {
+                const student = students.find(s => s.id === record.studentId);
+                const classItem = classes.find(c => c.id === record.classId);
+                
+                return {
+                    ...record,
+                    studentName: student ? student.name : 'Unknown',
+                    className: classItem ? classItem.name : 'Unknown'
+                };
+            });
+            
+            const dataToExport = {
+                attendanceRecords: enhancedRecords,
+                viewMode: currentViewMode,
+                filters: {
+                    dateRange: `${startDate || 'Any'} to ${endDate || 'Any'}`,
+                    student: currentViewMode === 'student' ? students.find(s => s.id === parseInt(document.getElementById('historyStudent').value))?.name : 'All Students'
+                },
+                exportDate: new Date().toISOString(),
+                totalRecords: enhancedRecords.length
+            };
+            
+            const dataStr = JSON.stringify(dataToExport, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+            
+            const exportFileDefaultName = `attendance_history_${new Date().toISOString().slice(0,10)}.json`;
+            
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportFileDefaultName);
+            linkElement.click();
+            
+            alert('Attendance history exported successfully!');
+        });
+
+        // Initialize date change listener for attendance
+        document.getElementById('attendanceDate').addEventListener('change', function() {
+            updateAttendanceDisplay();
+            
+            // Reload attendance table if a class is selected
+            const attendanceClass = document.getElementById('attendanceClass').value;
+            if (attendanceClass) {
+                loadAttendanceTable(parseInt(attendanceClass));
+            }
+            
+            // Auto-save when date changes
+            autoSave();
+        });
+
+        // Auto-save when any form field changes
+        document.querySelectorAll('input, select').forEach(element => {
+            element.addEventListener('change', autoSave);
+        });
+    </script>
+</body>
+</html>
